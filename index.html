@@ -22,6 +22,13 @@
                 display:block;
             }
             #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+            
+            #container{
+                width:80%;
+                height:800px;
+                background: white;
+                margin:0px auto;
+            }
         </style>
     </head>
     <body>
@@ -29,14 +36,15 @@
         <div id="info">
 
 
-            <br/><span class="button" id="color">change color</span>,
-            <span class="button" id="font">change font</span>,
-            <span class="button" id="weight">change weight</span>,
-            <span class="button" id="bevel">change bevel</span>,
-            <span class="button" id="postprocessing">change postprocessing</span>,
-            <a id="permalink" href="#">permalink</a>
-        </div>
+            <br/><span class="button" id="color">change color</span>
 
+            <!--<a id="permalink" href="#">permalink</a>-->
+        </div>
+        <div id="container">
+            
+            a
+            
+        </div>
 
         <script src="js/three.min.js"></script>
         <script src="js/utils/GeometryUtils.js"></script>
@@ -57,21 +65,18 @@
         <script src="js/libs/stats.min.js"></script>
 
         <!-- load the font files -->
-
         <script src="fonts/gentilis_bold.typeface.js"></script>
         <script src="fonts/gentilis_regular.typeface.js"></script>
         <script src="fonts/optimer_bold.typeface.js"></script>
         <script src="fonts/optimer_regular.typeface.js"></script>
         <script src="fonts/helvetiker_bold.typeface.js"></script>
         <script src="fonts/helvetiker_regular.typeface.js"></script>
-        <script src="fonts/droid/droid_sans_regular.typeface.js"></script>
+<!--        <script src="fonts/droid/droid_sans_regular.typeface.js"></script>
         <script src="fonts/droid/droid_sans_bold.typeface.js"></script>
         <script src="fonts/droid/droid_serif_regular.typeface.js"></script>
-        <script src="fonts/droid/droid_serif_bold.typeface.js"></script>
+        <script src="fonts/droid/droid_serif_bold.typeface.js"></script>-->
 
         <!-- todo async loader for fonts -->
-
-
         <!-- replace built-in triangulation with PnlTri.js -->
         <script src="js/libs/pnltri.min.js"></script>
         <script>
@@ -90,7 +95,10 @@
             if (!Detector.webgl)
                 Detector.addGetWebGLMessage();
 
-            var container, stats, permalink, hex, color;
+
+            var container = document.getElementById('container');
+
+            var stats, hex, color;
 
             var camera, cameraTarget, scene, renderer;
 
@@ -103,7 +111,7 @@
 
             //PBC IMPLEMENTATION
             var rotationDirection = "left";
-            var rotationAmount = 0.50;
+            var rotationAmount = 0.30;
 
 
             var text = "SOME TEXT",
@@ -127,7 +135,6 @@
                 "gentilis": 2,
                 "droid sans": 3,
                 "droid serif": 4
-
             };
 
             var weightMap = {
@@ -175,21 +182,17 @@
 
             function init() {
 
-                container = document.createElement('div');
+                
                 document.body.appendChild(container);
 
-                permalink = document.getElementById("permalink");
-
                 // CAMERA
+                console.log(container);
 
-                camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+
+                camera = new THREE.PerspectiveCamera(30, container.clientWidth / container.clientHeight, 1, 1500);
                 camera.position.set(0, 400, 700);
 
                 cameraTarget = new THREE.Vector3(0, 150, 0);
-
-
-
-
 
                 // SCENE
 
@@ -205,10 +208,6 @@
                 var pointLight = new THREE.PointLight(0xffffff, 1.5);
                 pointLight.position.set(0, 100, 90);
                 scene.add(pointLight);
-
-                //text = capitalize( font ) + " " + capitalize( weight );
-                //text = "abcdefghijklmnopqrstuvwxyz0123456789";
-                //text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
                 // Get text from hash
 
@@ -234,8 +233,6 @@
 
                     text = decodeURI(texthash);
 
-                    updatePermalink();
-
                 } else {
 
                     pointLight.color.setHSL(Math.random(), 1, 0.5);
@@ -255,6 +252,8 @@
 
                 createText();
 
+                //THIS IS THE PLANE 
+
                 var plane = new THREE.Mesh(
                         new THREE.PlaneBufferGeometry(10000, 10000),
                         new THREE.MeshBasicMaterial({color: 0xffffff, opacity: 0.5, transparent: true})
@@ -268,7 +267,7 @@
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setClearColor(scene.fog.color);
                 renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setSize(container.clientWidth, container.clientHeight);
                 container.appendChild(renderer.domElement);
 
                 // STATS
@@ -291,72 +290,10 @@
                     pointLight.color.setHSL(Math.random(), 1, 0.5);
                     hex = decimalToHex(pointLight.color.getHex());
 
-                    updatePermalink();
-
                 }, false);
-
-//				document.getElementById( "font" ).addEventListener( 'click', function() {
-//
-//					if ( font == "helvetiker" ) {
-//
-//						font = "optimer";
-//
-//					} else if ( font == "optimer" ) {
-//
-//						font = "gentilis";
-//
-//					} else if ( font == "gentilis" ) {
-//
-//						font = "droid sans";
-//
-//					} else if ( font == "droid sans" ) {
-//
-//						font = "droid serif";
-//
-//					} else {
-//
-//						font = "helvetiker";
-//
-//					}
-//
-//					refreshText();
-//
-//				}, false );
-
-//				document.getElementById( "weight" ).addEventListener( 'click', function() {
-//
-//					if ( weight == "bold" ) {
-//
-//						weight = "normal";
-//
-//					} else {
-//
-//						weight = "bold";
-//
-//					}
-//
-//					refreshText();
-//
-//				}, false );
-
-//				document.getElementById( "bevel" ).addEventListener( 'click', function() {
-//
-//					bevelEnabled = !bevelEnabled;
-//
-//					refreshText();
-//
-//				}, false );
-//
-//				document.getElementById( "postprocessing" ).addEventListener( 'click', function() {
-//
-//					postprocessing.enabled = !postprocessing.enabled;
-//					updatePermalink();
-//
-//				}, false );
 
 
                 // POSTPROCESSING
-
                 renderer.autoClear = false;
 
                 var renderModel = new THREE.RenderPass(scene, camera);
@@ -379,8 +316,6 @@
                 composer.addPass(effectBloom);
                 composer.addPass(effectFilm);
 
-                //
-
                 window.addEventListener('resize', onWindowResize, true);
 
             }
@@ -389,32 +324,17 @@
 
                 windowHalfX = window.innerWidth / 2;
                 windowHalfY = window.innerHeight / 2;
-
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
-
                 renderer.setSize(window.innerWidth, window.innerHeight);
-
                 composer.reset();
-
                 effectFXAA.uniforms[ 'resolution' ].value.set(1 / window.innerWidth, 1 / window.innerHeight);
 
             }
 
-            //
-
             function boolToNum(b) {
 
                 return b ? 1 : 0;
-
-            }
-
-            function updatePermalink() {
-
-                var link = hex + fontMap[ font ] + weightMap[ weight ] + boolToNum(postprocessing.enabled) + boolToNum(bevelEnabled) + "#" + encodeURI(text);
-
-                permalink.href = "#" + link;
-                window.location.hash = link;
 
             }
 
@@ -557,20 +477,13 @@
 
             }
 
-//
-
-
             function refreshText() {
-
-                updatePermalink();
 
                 group.remove(textMesh1);
                 if (mirror)
                     group.remove(textMesh2);
-
                 if (!text)
                     return;
-
                 createText();
 
             }
@@ -583,10 +496,6 @@
                 document.addEventListener('', onFrame, false);
 
             }
-
-
-
-
 
             function onDocumentMouseDown(event) {
 
@@ -628,9 +537,8 @@
             function onDocumentTouchStart(event) {
 
                 if (event.touches.length == 1) {
-
+                    
                     event.preventDefault();
-
                     mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
                     targetRotationOnMouseDown = targetRotation;
 
@@ -643,7 +551,6 @@
                 if (event.touches.length == 1) {
 
                     event.preventDefault();
-
                     mouseX = event.touches[ 0 ].pageX - windowHalfX;
                     targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
 
@@ -651,19 +558,14 @@
 
             }
 
-            //
 
             function animate() {
 
                 requestAnimationFrame(animate);
-
                 render();
                 stats.update();
 
             }
-
-//             var rotationDirection = "left";
-//            var rotationAmount = 0.50;
 
             function render() {
 
@@ -671,47 +573,27 @@
                 var rotDirection = rotationDirection;
 
                 var time = Date.now() * 0.0000000005;
-//                console.log(time);
-
                 if (rotDirection == "left") {
-//                    console.log("GOIN LEFT");
                     group.rotation.y += 0.000005 * time;
                     if (group.rotation.y > rotationAmount) {
                         rotationDirection = "right";
                     }
                 }
-
                 if (rotDirection == "right") {
-//                    console.log("GOING TO RIGHT")
                     group.rotation.y -= 0.000005 * time;
                     if (group.rotation.y < -rotationAmount) {
                         rotationDirection = "left";
                     }
                 }
-
-
-
-
-
-                console.log(group.rotation.y);
-
-
-//                group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
-
+                
                 camera.lookAt(cameraTarget);
-
                 renderer.clear();
 
                 if (postprocessing.enabled) {
-
                     composer.render(0.5);
-
                 } else {
-
                     renderer.render(scene, camera);
-
                 }
-
             }
 
         </script>
