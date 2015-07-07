@@ -22,10 +22,10 @@
                 display:block;
             }
             #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
-            
+
             #container{
-                width:80%;
-                height:800px;
+                width:400px;
+                height:275px;
                 background: white;
                 margin:0px auto;
             }
@@ -41,9 +41,9 @@
             <!--<a id="permalink" href="#">permalink</a>-->
         </div>
         <div id="container">
-            
-            a
-            
+
+
+
         </div>
 
         <script src="js/three.min.js"></script>
@@ -71,10 +71,10 @@
         <script src="fonts/optimer_regular.typeface.js"></script>
         <script src="fonts/helvetiker_bold.typeface.js"></script>
         <script src="fonts/helvetiker_regular.typeface.js"></script>
-<!--        <script src="fonts/droid/droid_sans_regular.typeface.js"></script>
-        <script src="fonts/droid/droid_sans_bold.typeface.js"></script>
-        <script src="fonts/droid/droid_serif_regular.typeface.js"></script>
-        <script src="fonts/droid/droid_serif_bold.typeface.js"></script>-->
+        <!--        <script src="fonts/droid/droid_sans_regular.typeface.js"></script>
+                <script src="fonts/droid/droid_sans_bold.typeface.js"></script>
+                <script src="fonts/droid/droid_serif_regular.typeface.js"></script>
+                <script src="fonts/droid/droid_serif_bold.typeface.js"></script>-->
 
         <!-- todo async loader for fonts -->
         <!-- replace built-in triangulation with PnlTri.js -->
@@ -105,7 +105,7 @@
             var composer;
             var effectFXAA;
 
-            var group, textMesh1, textMesh2, textGeo, material;
+            var torusObject, group, textMesh1, textMesh2, textGeo, material;
 
             var firstLetter = true;
 
@@ -115,8 +115,8 @@
 
 
             var text = "SOME TEXT",
-                    height = 50,
-                    size = 60,
+                    height = 40,
+                    size = 50,
                     hover = 10,
                     curveSegments = 4,
                     bevelThickness = 1.5,
@@ -127,7 +127,7 @@
                     weight = "bold", // normal bold
                     style = "normal"; // normal italic
 
-            var mirror = true;
+            var mirror = false;
 
             var fontMap = {
                 "helvetiker": 0,
@@ -182,13 +182,9 @@
 
             function init() {
 
-                
+
                 document.body.appendChild(container);
-
                 // CAMERA
-                console.log(container);
-
-
                 camera = new THREE.PerspectiveCamera(30, container.clientWidth / container.clientHeight, 1, 1500);
                 camera.position.set(0, 400, 700);
 
@@ -201,7 +197,7 @@
 
                 // LIGHTS
 
-                var dirLight = new THREE.DirectionalLight(0xffffff, 0.125);
+                var dirLight = new THREE.DirectionalLight(0xffffff, 0.325);
                 dirLight.position.set(0, 0, 1).normalize();
                 scene.add(dirLight);
 
@@ -223,6 +219,7 @@
                     var texthash = hash.substring(10);
 
                     hex = colorhash;
+//                    console.log(hex);
                     pointLight.color.setHex(parseInt(colorhash, 16));
 
                     font = reverseFontMap[ parseInt(fonthash) ];
@@ -235,13 +232,31 @@
 
                 } else {
 
-                    pointLight.color.setHSL(Math.random(), 1, 0.5);
-                    hex = decimalToHex(pointLight.color.getHex());
+                    var numarrandom = Math.random();
 
+                    var bluegreen = 0.53586555539527533;
+                    
+                    var green = 0.32432342224443242;
+                    
+                    var redpinkish = 0.82432342224443242;
+                    
+                    var redish = 0.92432342224443242;
+
+
+//                    pointLight.color.setHSL(bluegreen, 1, 0.5);
+                    pointLight.color.setHSL(bluegreen, 1, 0.5);
+                    console.log(pointLight.color);
+                    
+//                    hex = decimalToHex(pointLight.color.getHex());
+                    hex = "00FF94";
+                    console.log(numarrandom);
+                    console.log(hex);
+                    //Verde deschis fain =  00FF94
+                    
                 }
 
                 material = new THREE.MeshFaceMaterial([
-                    new THREE.MeshPhongMaterial({color: 0xffffff, shading: THREE.FlatShading}), // front
+                    new THREE.MeshPhongMaterial({color: 0xffff00, shading: THREE.FlatShading}), // front
                     new THREE.MeshPhongMaterial({color: 0xffffff, shading: THREE.SmoothShading}) // side
                 ]);
 
@@ -260,7 +275,40 @@
                         );
                 plane.position.y = 100;
                 plane.rotation.x = -Math.PI / 2;
-                scene.add(plane);
+
+//                scene.add(plane);
+
+                //TORUS GEOMETRY BY PBC
+                var torusGeometry = new THREE.TorusGeometry(100, 8, 8, 40);
+                var torusMaterial = new THREE.MeshPhongMaterial({color: 0xff6090, shading: THREE.SmoothShading});
+                torusObject = new THREE.Mesh(torusGeometry, torusMaterial);
+
+                torusObject.scale.x = 2.4;
+                torusObject.scale.y = 0.9;
+                torusObject.scale.z = 0.9;
+
+                torusObject.position.x = 0;
+                torusObject.position.y = 120;
+                torusObject.position.z = 0;
+
+                scene.add(torusObject);
+
+
+//
+////                var lathePoints = [];
+////                for (var i = 0; i < 10; i++) {
+////                    lathePoints.push(new THREE.Vector3(Math.sin(i * 1) * 15 + 50, 0, (i - 5) * 2));
+////                }
+////                var latheGeometry = new THREE.LatheGeometry(lathePoints);
+////                var latheMaterial = new THREE.MeshBasicMaterial({color: 0xffff00});
+////                var latheObject = new THREE.Mesh(latheGeometry, latheMaterial);
+////
+//////                latheObject.rotation.x = 1;
+////                latheObject.rotation.z = Math.PI / 2;
+////
+////                scene.add(latheObject);
+
+
 
                 // RENDERER
 
@@ -537,7 +585,7 @@
             function onDocumentTouchStart(event) {
 
                 if (event.touches.length == 1) {
-                    
+
                     event.preventDefault();
                     mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
                     targetRotationOnMouseDown = targetRotation;
@@ -585,7 +633,12 @@
                         rotationDirection = "left";
                     }
                 }
-                
+
+
+                torusObject.rotation.x += 0.00005 * time;
+
+
+
                 camera.lookAt(cameraTarget);
                 renderer.clear();
 
